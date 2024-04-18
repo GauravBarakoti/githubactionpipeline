@@ -1,0 +1,31 @@
+name: pipeline CI
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+    - name: Docker build
+      env:
+        IMAGE_TAG: ${{ github.run_number }}
+      run: |
+        cd /home/ubuntu/workspace
+        export IMAGE_TAG={IMAGE_TAG}
+        docker-compose build --no-cache
+    - name: Docker-Compose down And up
+      env:
+        IMAGE_TAG: ${{ github.run_number }}
+      run: |
+        cd /home/ubuntu/workspace
+        docker-compose down
+        docker-compose up -d
+    - name: Remove previous Image If Any keep last 2 version
+      env:
+        IMAGE_TAG: ${{ github.run_number }}
+      run: |
+        if [[ "expr ${IMAGE_TAG} - 2" != "" ]]; then
+          docker image rm soorse_webapp:`expr ${IMAGE_TAG} - 2 `
+        fi
