@@ -23,7 +23,7 @@ jobs:
         cd /home/ubuntu/workspace
         docker-compose down
         docker-compose up -d
-    - name: Remove previous Image If Any keep last 2 version
+    - name: Remove the previous Image If Any keep the last 2 version
       env:
         IMAGE_TAG: ${{ github.run_number }}
       run: |
