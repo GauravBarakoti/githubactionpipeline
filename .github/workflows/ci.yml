@@ -12,6 +12,7 @@ jobs:
       env:
         IMAGE_TAG: ${{ github.run_number }}
       run: |
+        echo $IMAGE_TAG
         cd /home/ubuntu/workspace
         export IMAGE_TAG={IMAGE_TAG}
         docker-compose build --no-cache
