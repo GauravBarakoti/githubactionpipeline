@@ -27,5 +27,5 @@ jobs:
         IMAGE_TAG: ${{ github.run_number }}
       run: |
         if [[ "expr ${IMAGE_TAG} - 2" != "" ]]; then
-          docker image rm soorse_webapp:`expr ${IMAGE_TAG} - 2 `
+          docker image rm mynginx:`expr ${IMAGE_TAG} - 2 `
         fi
