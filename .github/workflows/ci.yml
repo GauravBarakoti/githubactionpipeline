@@ -27,6 +27,6 @@ jobs:
       env:
         IMAGE_TAG: ${{ github.run_number }}
       run: |
-        if [[ "expr ${IMAGE_TAG} - 2" != "" ]]; then
-          docker image rm mynginx:`expr ${IMAGE_TAG} - 2 `
+        if [[ "expr ${{ env.IMAGE_TAG }} - 2" != "" ]]; then
+          docker image rm mynginx:`expr ${{ env.IMAGE_TAG }} - 2 `
         fi
