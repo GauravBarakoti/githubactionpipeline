@@ -1,32 +1,42 @@
-# name: pipeline CI
+name: Publish
 
-# on:
-#   push:
-#     branches: [ "main" ]
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: '*'
 
-# jobs:
-#   build:
-#     runs-on: self-hosted
-#     steps:
-#     - name: Docker build
-#       env:
-#         IMAGE_TAG: ${{ github.run_number }}
-#       run: |
-#         echo $IMAGE_TAG
-#         cd /home/ubuntu/workspace
-#         export IMAGE_TAG=${{ env.IMAGE_TAG }}
-#         docker-compose build --no-cache
-#     - name: Docker-Compose down And up
-#       env:
-#         IMAGE_TAG: ${{ github.run_number }}
-#       run: |
-#         cd /home/ubuntu/workspace
-#         docker-compose down
-#         docker-compose up -d
-#     - name: Remove the previous Image If Any keep the last 2 version
-#       env:
-#         IMAGE_TAG: ${{ github.run_number }}
-#       run: |
-#         if [[ "expr ${{ env.IMAGE_TAG }} - 2" != "" ]]; then
-#           docker image rm mynginx:`expr ${{ env.IMAGE_TAG }} - 2 `
-#         fi
+jobs:
+  quality:
+    name: 'Quality: ${{ matrix.node-version }} ${{ matrix.os }}'
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        node-version: [20.12.2]
+        pnpm-version: [9.3.0]
+        os: [ubuntu-latest]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: 'Set node version to ${{ matrix.node-version }}'
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: 'Install deps: ${{ matrix.node-version }} ${{ matrix.os }}'
+        run: pnpm install
+
+      # - name: 'Format: ${{ matrix.node-version }} ${{ matrix.os }}'
+      #   run: pnpm run format
+
+      - name: 'Build: ${{ matrix.node-version }} ${{ matrix.os }}'
+        run: pnpm run build
+
+ 
