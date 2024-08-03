@@ -5,25 +5,27 @@ on:
     workflows: ["Publish"]
     types:
       - completed
-  # push:
-  #   branches:
-  #     - dev
-
 
 jobs:
   update-main:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Merge dev into main
-    if: ${{ github.event.workflow_run.conclusion == 'succeeded' }}
     runs-on: ubuntu-latest
+
     steps:
-      - name: checkout
+      - name: Debug info
+        run: |
+          echo "Workflow conclusion: ${{ github.event.workflow_run.conclusion }}"
+          echo "Workflow name: ${{ github.event.workflow_run.name }}"
+          echo "Workflow status: ${{ github.event.workflow_run.status }}"
+      
+      - name: Checkout repository
         uses: actions/checkout@v2
-      - name: merge
+      
+      - name: Merge dev into main
         uses: mtanzi/action-automerge@v1
         id: merge
         with:
           github_token: ${{ secrets.TOKEN }}
           source: 'dev'
           target: 'main'
-
-

@@ -2,15 +2,8 @@ name: Publish
 
 on:
   push:
-    branches: [dev]
-  # pull_request:
-  #   branches: '*'
-# name: Hello World
-
-# on:
-#   push:
-#     branches:
-#       - dev
+    branches:
+      - dev
 
 jobs:
   hello-world:
