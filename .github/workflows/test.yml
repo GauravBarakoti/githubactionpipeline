@@ -5,6 +5,7 @@ on:
     branches:
       - dev
 
+
 jobs:
   update-cms-master:
     name: Merge master into release after a PR is merged
@@ -19,6 +20,5 @@ jobs:
           github_token: ${{ secrets.TOKEN }}
           source: 'dev'
           target: 'main'
-          # webhook_url: #if present add the Slack webhook
 
 
