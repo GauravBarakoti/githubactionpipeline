@@ -1,32 +1,32 @@
-name: pipeline CI
+# name: pipeline CI
 
-on:
-  push:
-    branches: [ "main" ]
+# on:
+#   push:
+#     branches: [ "main" ]
 
-jobs:
-  build:
-    runs-on: self-hosted
-    steps:
-    - name: Docker build
-      env:
-        IMAGE_TAG: ${{ github.run_number }}
-      run: |
-        echo $IMAGE_TAG
-        cd /home/ubuntu/workspace
-        export IMAGE_TAG=${{ env.IMAGE_TAG }}
-        docker-compose build --no-cache
-    - name: Docker-Compose down And up
-      env:
-        IMAGE_TAG: ${{ github.run_number }}
-      run: |
-        cd /home/ubuntu/workspace
-        docker-compose down
-        docker-compose up -d
-    - name: Remove the previous Image If Any keep the last 2 version
-      env:
-        IMAGE_TAG: ${{ github.run_number }}
-      run: |
-        if [[ "expr ${{ env.IMAGE_TAG }} - 2" != "" ]]; then
-          docker image rm mynginx:`expr ${{ env.IMAGE_TAG }} - 2 `
-        fi
+# jobs:
+#   build:
+#     runs-on: self-hosted
+#     steps:
+#     - name: Docker build
+#       env:
+#         IMAGE_TAG: ${{ github.run_number }}
+#       run: |
+#         echo $IMAGE_TAG
+#         cd /home/ubuntu/workspace
+#         export IMAGE_TAG=${{ env.IMAGE_TAG }}
+#         docker-compose build --no-cache
+#     - name: Docker-Compose down And up
+#       env:
+#         IMAGE_TAG: ${{ github.run_number }}
+#       run: |
+#         cd /home/ubuntu/workspace
+#         docker-compose down
+#         docker-compose up -d
+#     - name: Remove the previous Image If Any keep the last 2 version
+#       env:
+#         IMAGE_TAG: ${{ github.run_number }}
+#       run: |
+#         if [[ "expr ${{ env.IMAGE_TAG }} - 2" != "" ]]; then
+#           docker image rm mynginx:`expr ${{ env.IMAGE_TAG }} - 2 `
+#         fi
