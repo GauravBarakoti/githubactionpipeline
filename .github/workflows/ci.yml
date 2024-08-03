@@ -5,38 +5,17 @@ on:
     branches: [dev]
   # pull_request:
   #   branches: '*'
+# name: Hello World
+
+# on:
+#   push:
+#     branches:
+#       - dev
 
 jobs:
-  quality:
-    name: 'Quality: ${{ matrix.node-version }} ${{ matrix.os }}'
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        node-version: [20.12.2]
-        pnpm-version: [9.3.0]
-        os: [ubuntu-latest]
+  hello-world:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: 'Set node version to ${{ matrix.node-version }}'
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
-
-      - name: 'Install deps: ${{ matrix.node-version }} ${{ matrix.os }}'
-        run: pnpm install
-
-      # - name: 'Format: ${{ matrix.node-version }} ${{ matrix.os }}'
-      #   run: pnpm run format
-
-      - name: 'Build: ${{ matrix.node-version }} ${{ matrix.os }}'
-        run: pnpm run build
-
- 
+      - name: Echo Hello World
+        run: echo "Hello World"
