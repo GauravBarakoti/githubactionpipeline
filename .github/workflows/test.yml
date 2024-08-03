@@ -7,8 +7,8 @@ on:
 
 
 jobs:
-  update-cms-master:
-    name: Merge master into release after a PR is merged
+  update-main:
+    name: Merge dev into main
     runs-on: ubuntu-latest
     steps:
       - name: checkout
