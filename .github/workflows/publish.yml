@@ -17,4 +17,4 @@ jobs:
           echo "Workflow conclusion: ${{ github.event.workflow_run.conclusion }}"
           echo "Workflow name: ${{ github.event.workflow_run.name }}"
           echo "Workflow status: ${{ github.event.workflow_run.status }}"
-          echo "${{github.event_name}} == 'pull_request' && ${{github.event.action}} == 'closed' && ${{github.event.pull_request.merged}} == true"
+          echo "${{github.event_name}} == 'pull_request' && ${{github.event.action}} == 'closed' && ${{github.event.pull_request.merged}} == true== true"
