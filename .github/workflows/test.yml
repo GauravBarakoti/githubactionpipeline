@@ -1,24 +1,17 @@
-name: Update cms/master
+name: Action-Automerge
 
 on:
-  workflow_run:
-    workflows: ["Publish"]
-    types:
-      - completed
+  push:
+    branches:
+      - dev
 
 jobs:
   update-main:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
     name: Merge dev into main
     runs-on: ubuntu-latest
 
     steps:
-      - name: Debug info
-        run: |
-          echo "Workflow conclusion: ${{ github.event.workflow_run.conclusion }}"
-          echo "Workflow name: ${{ github.event.workflow_run.name }}"
-          echo "Workflow status: ${{ github.event.workflow_run.status }}"
-      
       - name: Checkout repository
         uses: actions/checkout@v2
       
@@ -26,6 +19,6 @@ jobs:
         uses: mtanzi/action-automerge@v1
         id: merge
         with:
-          github_token: ${{ secrets.TOKEN }}
+          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           source: 'dev'
           target: 'main'
