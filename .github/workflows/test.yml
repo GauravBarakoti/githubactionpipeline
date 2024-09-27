@@ -12,6 +12,9 @@ jobs:
     # if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
     # name: Merge dev into main
     runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
 
     steps:
       - name: Slack notification of pipeline
