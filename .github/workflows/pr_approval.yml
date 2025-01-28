@@ -6,18 +6,18 @@ on:
 
 jobs:
   notifySlack:
-
     runs-on: ubuntu-latest
 
     steps:
     - name: Notify Slack
-      env:
-        # SLACK_WEBHOOK_URL_APPROVAL: ${{ secrets.SLACK_WEBHOOK_URL }} 
-        SLACK_CHANNEL: general
-        SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
-        SLACK_ICON: https://github.com/rtCamp.png?size=48
-        SLACK_MESSAGE: 'Post Content :rocket:'
-        SLACK_TITLE: Post Title
-        SLACK_USERNAME: rtCamp
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-      uses: rtCamp/action-slack-notify@v2
+      uses: slack/notify@v1.7.1  # Use the latest stable version
+      with:
+        event: pull_request
+        channel: "#C072RDZHD28"  # Replace with your desired channel
+        message: |
+          *Pull Request:* ${{ github.event.pull_request.title }}
+          *PR URL:* ${{ github.event.pull_request.html_url }}
+          *Who?:* ${{ github.event.pull_request.user.login }}
+          *Request State:* ${{ github.event.pull_request.state }}
+
+          View PR on GitHub: ${{ github.event.pull_request.html_url }}
