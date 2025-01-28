@@ -11,7 +11,7 @@ jobs:
     steps:
     - name: Notify Slack
       env:
-        SLACK_WEBHOOK_URL_APPROVAL: ${{ secrets.SLACK_WEBHOOK_URL_APPROVAL }}
+        SLACK_WEBHOOK_URL_APPROVAL: ${{ secrets.SLACK_WEBHOOK_URL }}
       run: |
         curl -X POST -H 'Content-type: application/json' --data '{
           "channel": "C088LF48XHB",
