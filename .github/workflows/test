@@ -1,0 +1,54 @@
+name: Action-Automerge
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+    
+
+jobs:
+  update-main:
+    # if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+    # name: Merge dev into main
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+
+    steps:
+      - name: Slack notification of pipeline
+        uses: act10ns/slack@v2
+        with:
+          status: starting
+          channel: '#new-channel'
+          message: Backend Deployment Started..
+      - name: Checkout repository
+        uses: actions/checkout@v2
+  
+      # - name: Merge dev into main
+      #   uses: mtanzi/action-automerge@v1
+      #   id: merge
+      #   with:
+      #     github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      #     source: 'dev'
+      #     target: 'main'
+      - name: pipeline status send on Slack
+        uses: act10ns/slack@v2
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#new-channel'
+        if: always()
+      - name: Post to a Slack channel
+        id: slack
+        uses: slackapi/slack-github-action@v1.27.0
+        with:
+          # Slack channel id, channel name, or user id to post message.
+          # See also: https://api.slack.com/methods/chat.postMessage#channels
+          # You can pass in multiple channels to post to by providing a comma-delimited list of channel IDs.
+          channel-id: 'C07P4BB10J2'
+          # For posting a simple plain text message
+          slack-message: "GitHub build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
