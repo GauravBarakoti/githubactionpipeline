@@ -12,6 +12,7 @@ jobs:
     - name: Notify Slack
       env:
         SLACK_WEBHOOK_URL_APPROVAL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        LAMBDA_API_URL: ${{ secrets.LAMBDA_API_URL }}
       run: |
         curl -X POST -H 'Content-type: application/json' --data '{
           "channel": "C088LF48XHB",
@@ -46,7 +47,7 @@ jobs:
                   "type": "button",
                   "text": {
                     "type": "plain_text",
-                    "text": "Approve PR ✅"
+                    "text": "✅ Approve"
                   },
                   "style": "primary",
                   "value": "approve",
@@ -56,7 +57,7 @@ jobs:
                   "type": "button",
                   "text": {
                     "type": "plain_text",
-                    "text": "Reject PR ❌"
+                    "text": "❌ Reject"
                   },
                   "style": "danger",
                   "value": "reject",
