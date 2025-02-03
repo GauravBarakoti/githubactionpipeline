@@ -12,21 +12,29 @@ jobs:
         env:
           SLACK_WEBHOOK_URL_APPROVAL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
-          curl -X POST -H 'Content-type: application/json' --data '{
-            "channel": "C072RDZHD28",  # Replace with your Slack channel ID
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          PR_USER="${{ github.event.pull_request.user.login }}"
+          PR_STATE="${{ github.event.pull_request.state }}"
+          PR_URL="${{ github.event.pull_request.html_url }}"
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          REPO_NAME="${{ github.repository }}"
+
+          PAYLOAD=$(cat <<EOF
+          {
+            "channel": "C072RDZHD28",  
             "blocks": [
               {
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "*Pull Request:* ${{ github.event.pull_request.title }}\n"
+                  "text": "*Pull Request:* $PR_TITLE\n"
                 }
               },
               {
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "*Who?:* ${{ github.event.pull_request.user.login }}\n*Request State:* ${{ github.event.pull_request.state }}"
+                  "text": "*Who?:* $PR_USER\n*Request State:* $PR_STATE"
                 }
               },
               {
@@ -39,7 +47,7 @@ jobs:
                       "text": "View PR on GitHub"
                     },
                     "style": "primary",
-                    "url": "${{ github.event.pull_request.html_url }}"
+                    "url": "$PR_URL"
                   },
                   {
                     "type": "button",
@@ -48,7 +56,7 @@ jobs:
                       "text": "✅ Approve"
                     },
                     "style": "primary",
-                    "value": "{\"action\": \"approve\", \"pr_number\": \"${{ github.event.pull_request.number }}\", \"repo_full_name\": \"${{ github.repository }}\"}",
+                    "value": "{\"action\": \"approve\", \"pr_number\": \"$PR_NUMBER\", \"repo_full_name\": \"$REPO_NAME\"}",
                     "action_id": "approve_pr"
                   },
                   {
@@ -58,10 +66,14 @@ jobs:
                       "text": "❌ Reject"
                     },
                     "style": "danger",
-                    "value": "{\"action\": \"reject\", \"pr_number\": \"${{ github.event.pull_request.number }}\", \"repo_full_name\": \"${{ github.repository }}\"}",
+                    "value": "{\"action\": \"reject\", \"pr_number\": \"$PR_NUMBER\", \"repo_full_name\": \"$REPO_NAME\"}",
                     "action_id": "reject_pr"
                   }
                 ]
               }
             ]
-          }' $SLACK_WEBHOOK_URL_APPROVAL
+          }
+          EOF
+          )
+
+          curl -X POST -H 'Content-type: application/json' --data "$PAYLOAD" $SLACK_WEBHOOK_URL_APPROVAL
