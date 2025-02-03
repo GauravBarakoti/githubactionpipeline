@@ -2,68 +2,66 @@ name: Slack Notifications
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   notifySlack:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Notify Slack
-      env:
-        SLACK_WEBHOOK_URL_APPROVAL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        LAMBDA_API_URL: ${{ secrets.LAMBDA_API_URL }}
-      run: |
-        curl -X POST -H 'Content-type: application/json' --data '{
-          "channel": "C088LF48XHB",
-          "blocks": [
-            {
-              "type": "section",
-              "text": {
-                "type": "mrkdwn",
-                "text": "*Pull Request:* ${{ github.event.pull_request.title }}\n"
-              }
-            },
-            {
-              "type": "section",
-              "text": {
-                "type": "mrkdwn",
-                "text": "*Who?:* ${{ github.event.pull_request.user.login }}\n*Request State:* ${{ github.event.pull_request.state }}"
-              }
-            },
-            {
-              "type": "actions",
-              "elements": [
-                {
-                  "type": "button",
-                  "text": {
-                    "type": "plain_text",
-                    "text": "View PR on GitHub"
-                  },
-                  "style": "primary",
-                  "url": "${{ github.event.pull_request.html_url }}"
-                },
-                {
-                  "type": "button",
-                  "text": {
-                    "type": "plain_text",
-                    "text": "✅ Approve"
-                  },
-                  "style": "primary",
-                  "value": "approve",
-                  "action_id": "approve_pr"
-                },
-                {
-                  "type": "button",
-                  "text": {
-                    "type": "plain_text",
-                    "text": "❌ Reject"
-                  },
-                  "style": "danger",
-                  "value": "reject",
-                  "action_id": "reject_pr"
+      - name: Notify Slack
+        env:
+          SLACK_WEBHOOK_URL_APPROVAL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{
+            "channel": "C072RDZHD28",  # Replace with your Slack channel ID
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*Pull Request:* ${{ github.event.pull_request.title }}\n"
                 }
-              ]
-            }
-          ]
-        }' $SLACK_WEBHOOK_URL_APPROVAL
+              },
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*Who?:* ${{ github.event.pull_request.user.login }}\n*Request State:* ${{ github.event.pull_request.state }}"
+                }
+              },
+              {
+                "type": "actions",
+                "elements": [
+                  {
+                    "type": "button",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "View PR on GitHub"
+                    },
+                    "style": "primary",
+                    "url": "${{ github.event.pull_request.html_url }}"
+                  },
+                  {
+                    "type": "button",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "✅ Approve"
+                    },
+                    "style": "primary",
+                    "value": "{\"action\": \"approve\", \"pr_number\": \"${{ github.event.pull_request.number }}\", \"repo_full_name\": \"${{ github.repository }}\"}",
+                    "action_id": "approve_pr"
+                  },
+                  {
+                    "type": "button",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "❌ Reject"
+                    },
+                    "style": "danger",
+                    "value": "{\"action\": \"reject\", \"pr_number\": \"${{ github.event.pull_request.number }}\", \"repo_full_name\": \"${{ github.repository }}\"}",
+                    "action_id": "reject_pr"
+                  }
+                ]
+              }
+            ]
+          }' $SLACK_WEBHOOK_URL_APPROVAL
