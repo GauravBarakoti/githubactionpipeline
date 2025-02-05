@@ -25,10 +25,20 @@ jobs:
               },
               {
                 "type": "section",
-                "text": {
-                  "type": "mrkdwn",
-                  "text": "🎨 *PR for:* *Frontend*\n👨‍💻 *Author:* <@${{ github.event.pull_request.user.login }}>\n📌 *Status:* *${{ github.event.pull_request.state | title }}*"
-                }
+                "fields": [
+                  {
+                    "type": "mrkdwn",
+                    "text": "🎨 *PR for:* *Frontend*"
+                  },
+                  {
+                    "type": "mrkdwn",
+                    "text": "👨‍💻 *Author:* <@${{ github.event.pull_request.user.login }}>"
+                  },
+                  {
+                    "type": "mrkdwn",
+                    "text": "📌 *Status:* *${{ github.event.pull_request.state }}*"
+                  }
+                ]
               },
               {
                 "type": "section",
