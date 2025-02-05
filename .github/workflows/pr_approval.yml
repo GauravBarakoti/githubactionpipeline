@@ -7,34 +7,34 @@ on:
 jobs:
   notifySlack:
     runs-on: ubuntu-latest
+
     steps:
       - name: Notify Slack
         env:
           SLACK_WEBHOOK_URL_APPROVAL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
-          PR_TITLE="${{ github.event.pull_request.title }}"
-          PR_USER="${{ github.event.pull_request.user.login }}"
-          PR_STATE="${{ github.event.pull_request.state }}"
-          PR_URL="${{ github.event.pull_request.html_url }}"
-          PR_NUMBER="${{ github.event.pull_request.number }}"
-          REPO_NAME="${{ github.repository }}"
-
-          PAYLOAD=$(cat <<EOF
-          {
-            "channel": "C072RDZHD28",  
+          curl -X POST -H 'Content-type: application/json' --data '{
+            "channel": "C072RDZHD28",
             "blocks": [
               {
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "*Pull Request:* $PR_TITLE\n"
+                  "text": "🚀 *Pull Request Update*"
                 }
               },
               {
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "*Who?:* $PR_USER\n*Request State:* $PR_STATE"
+                  "text": "🎨 *PR for:* *Frontend*\n👨‍💻 *Author:* <@${{ github.event.pull_request.user.login }}>\n📌 *Status:* *${{ github.event.pull_request.state | title }}*"
+                }
+              },
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "🔗 *Review & Feedback Needed*"
                 }
               },
               {
@@ -44,36 +44,13 @@ jobs:
                     "type": "button",
                     "text": {
                       "type": "plain_text",
-                      "text": "View PR on GitHub"
+                      "emoji": true,
+                      "text": "🔍 View PR on GitHub"
                     },
                     "style": "primary",
-                    "url": "$PR_URL"
-                  },
-                  {
-                    "type": "button",
-                    "text": {
-                      "type": "plain_text",
-                      "text": "✅ Approve"
-                    },
-                    "style": "primary",
-                    "value": "{\"action\": \"approve\", \"pr_number\": \"$PR_NUMBER\", \"repo_full_name\": \"$REPO_NAME\"}",
-                    "action_id": "approve_pr"
-                  },
-                  {
-                    "type": "button",
-                    "text": {
-                      "type": "plain_text",
-                      "text": "❌ Reject"
-                    },
-                    "style": "danger",
-                    "value": "{\"action\": \"reject\", \"pr_number\": \"$PR_NUMBER\", \"repo_full_name\": \"$REPO_NAME\"}",
-                    "action_id": "reject_pr"
+                    "url": "${{ github.event.pull_request.html_url }}"
                   }
                 ]
               }
             ]
-          }
-          EOF
-          )
-
-          curl -X POST -H 'Content-type: application/json' --data "$PAYLOAD" $SLACK_WEBHOOK_URL_APPROVAL
+          }' $SLACK_WEBHOOK_URL_APPROVAL
